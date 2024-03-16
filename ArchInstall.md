@@ -1,3 +1,3 @@
-Alt-"ARCH INSTALL" 
-======
+ARCH INSTALL
+============
 
