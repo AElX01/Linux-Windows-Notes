@@ -1,3 +1,4 @@
-ARCH INSTALL
-============
+ARCH LINUX INSTALL CHEATSHEET
+=============================
+
 
