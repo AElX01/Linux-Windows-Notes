@@ -16,7 +16,7 @@ ARCH LINUX INSTALL CHEATSHEET
     ```
 3. **create your partitions**
     ```bash
-    cfdisk #select GPT for UEFI support (if you prefer, investigate about MBR and GPT)
+    cfdisk #select GPT for UEFI support (Select DOS if installing on a VM)
     ```
     Create one partition *swap*, another to mount the *root* directory and another to mount the EFI system
     
@@ -27,14 +27,14 @@ ARCH LINUX INSTALL CHEATSHEET
     ![alt text](C:\Users\alexa\OneDrive\Pictures\Screenshots\ARCH1.png)
 4. **format partitions with their file system**
     ```bash
-    mkfs.ext4 /dev/*root_partition* #this will set your file system to be ext4
-    mkswap /dev/*swap partition*
+    mkfs.ext4 /dev/root_partition #this will set your file system to be ext4
+    mkswap /dev/swap partition
     mkfs.fat -F 32 /dev/efi_system_partition 
     ```
 5. **mount file systems**
     ```bash
     mount /dev/*root_partiton* /mnt 
-    mount --mkdir /dev/*efif_system* /mnt/boot #mount the volume on a new created directory
+    mount --mkdir /dev/efi_partition /mnt/boot/efi #or do first mkdir -p /mnt/boot/efi
     swapon /dev/*swap_partition* #enable swap volume
     ```
 
@@ -45,9 +45,12 @@ ARCH LINUX INSTALL CHEATSHEET
 
 6. **Install packages to run Arch**
     ```bash
-    pacstrap -K /mnt base linux linux-firmware
+    pacstrap -K /mnt base linux linux-firmware #use this if you are not connected to the internet
     ```
     This way we'll install the necessary packages to run the root system that's been mounted
+
+    
+    If connected to the internet, install linux, linux-firmware, base, base-devel, grub, efibootmgr, vim, networkmanager
 
     
     We are installing this from cache with -K
@@ -77,11 +80,17 @@ ARCH LINUX INSTALL CHEATSHEET
     ```bash
     passwd
     ```
+13. **create a user**
+    ```bash
+    useradd -m -G wheel -s /bin/bash alex0#-m creates the home directory and -G adds it to a grup
+    EDITOR=vim sudoers #uncoment the %wheel line
+    ```
+    wheel group allows you to perform administratives tasks
 13. **Install the grub boot loader**
     ```bash
-    mount /dev/efi_system /boot/efi #will mount the efi system partition to the /boot/efi
-    pacman -S grub efibootmgr
-    grub-install --target=x86_64-efi --efi-directory=/boot/efi 
+    grub-install /dev/sda
     grub-mkconfig -o /boot/grub/grub.cfg
     ```
 
+
+Right now, you have a new **Arch Linux** system! UMOUNT all and reboot!
